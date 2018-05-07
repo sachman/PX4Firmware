@@ -82,7 +82,8 @@
  * LSE - not installed
  */
 
-#define STM32_BOARD_XTAL        24000000ul
+/* AUS: Changing on board HSE oscillator to 16 MHz */
+#define STM32_BOARD_XTAL        16000000ul
 
 #define STM32_HSI_FREQUENCY     16000000ul
 #define STM32_LSI_FREQUENCY     32000
@@ -102,7 +103,8 @@
  *         = 48,000,000
  */
 
-#define STM32_PLLCFG_PLLM       RCC_PLLCFG_PLLM(24)
+/* AUS: Changing PLLM value according to on-board crystal of 16 MHz */
+#define STM32_PLLCFG_PLLM       RCC_PLLCFG_PLLM(16)
 #define STM32_PLLCFG_PLLN       RCC_PLLCFG_PLLN(336)
 #define STM32_PLLCFG_PLLP       RCC_PLLCFG_PLLP_2
 #define STM32_PLLCFG_PLLQ       RCC_PLLCFG_PLLQ(7)
