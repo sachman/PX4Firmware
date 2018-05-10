@@ -92,12 +92,12 @@ __EXPORT void stm32_spiinitialize(void)
 	stm32_configgpio(GPIO_EXTI_MPU_DRDY);
 #endif
 
-#ifdef CONFIG_STM32_SPI2
+#ifdef CONFIG_STM32_SPI4
 	stm32_configgpio(GPIO_SPI_CS_FRAM);
 	stm32_gpiowrite(GPIO_SPI_CS_FRAM, 1);
 #endif
 
-#ifdef CONFIG_STM32_SPI4
+#ifdef CONFIG_STM32_SPI2
 	stm32_configgpio(GPIO_SPI_CS_EXT0);
 	stm32_configgpio(GPIO_SPI_CS_EXT1);
 	stm32_configgpio(GPIO_SPI_CS_EXT2);
@@ -169,22 +169,33 @@ __EXPORT uint8_t stm32_spi1status(FAR struct spi_dev_s *dev, enum spi_dev_e devi
 	return SPI_STATUS_PRESENT;
 }
 
-
-#ifdef CONFIG_STM32_SPI2
-__EXPORT void stm32_spi2select(FAR struct spi_dev_s *dev, enum spi_dev_e devid, bool selected)
+/* AUS: Changed for porting purposes */
+#ifdef CONFIG_STM32_SPI4
+__EXPORT void stm32_spi4select(FAR struct spi_dev_s *dev, enum spi_dev_e devid, bool selected)
 {
-	/* there can only be one device on this bus, so always select it */
-	stm32_gpiowrite(GPIO_SPI_CS_FRAM, !selected);
+    /* SPI select is active low, so write !selected to select the device */
+	switch (devid) {
+	case AUS_V10_SPIDEV_FRAM:
+	    stm32_gpiowrite(GPIO_SPI_CS_FRAM, !selected);
+	    stm32_gpiowrite(GPIO_SPI_CS_AUS_BARO_EXT, 1);
+	    break;
+	case AUS_V10_SPIDEV_BARO:
+	    stm32_gpiowrite(GPIO_SPI_CS_FRAM, 1);
+	    stm32_gpiowrite(GPIO_SPI_CS_AUS_BARO_EXT, !selected);
+	    break;
+    default:
+        break;
+	}
 }
 
-__EXPORT uint8_t stm32_spi2status(FAR struct spi_dev_s *dev, enum spi_dev_e devid)
+__EXPORT uint8_t stm32_spi4status(FAR struct spi_dev_s *dev, enum spi_dev_e devid)
 {
 	/* FRAM is always present */
 	return SPI_STATUS_PRESENT;
 }
 #endif
 
-__EXPORT void stm32_spi4select(FAR struct spi_dev_s *dev, enum spi_dev_e devid, bool selected)
+__EXPORT void stm32_spi2select(FAR struct spi_dev_s *dev, enum spi_dev_e devid, bool selected)
 {
 	/* SPI select is active low, so write !selected to select the device */
 
@@ -227,7 +238,7 @@ __EXPORT void stm32_spi4select(FAR struct spi_dev_s *dev, enum spi_dev_e devid, 
 	}
 }
 
-__EXPORT uint8_t stm32_spi4status(FAR struct spi_dev_s *dev, enum spi_dev_e devid)
+__EXPORT uint8_t stm32_spi2status(FAR struct spi_dev_s *dev, enum spi_dev_e devid)
 {
 	return SPI_STATUS_PRESENT;
 }
