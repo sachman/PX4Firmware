@@ -101,10 +101,12 @@ __EXPORT void stm32_spiinitialize(void)
 	stm32_configgpio(GPIO_EXTI_MPU_DRDY);
 #endif
 
-/* AUS: Changed for porting purposes; v10 has FRAM on SPI4 */
+/* AUS: Changed for porting purposes; v10 has FRAM and Baro on SPI4 */
 #ifdef CONFIG_STM32_SPI4
 	stm32_configgpio(GPIO_SPI_CS_FRAM);
 	stm32_gpiowrite(GPIO_SPI_CS_FRAM, 1);
+	stm32_configgpio(GPIO_SPI_CS_BARO);
+	stm32_gpiowrite(GPIO_SPI_CS_BARO, 1);
 #endif
 
 #ifdef CONFIG_STM32_SPI2
@@ -198,11 +200,11 @@ __EXPORT void stm32_spi4select(FAR struct spi_dev_s *dev, enum spi_dev_e devid, 
 	switch (devid) {
 	case AUS_V10_SPIDEV_FRAM:
 	    stm32_gpiowrite(GPIO_SPI_CS_FRAM, !selected);
-	    stm32_gpiowrite(GPIO_SPI_CS_AUS_BARO_EXT, 1);
+	    stm32_gpiowrite(GPIO_SPI_CS_BARO, 1);
 	    break;
-	case AUS_V10_SPIDEV_BARO:
+	case PX4_SPIDEV_BARO:
 	    stm32_gpiowrite(GPIO_SPI_CS_FRAM, 1);
-	    stm32_gpiowrite(GPIO_SPI_CS_AUS_BARO_EXT, !selected);
+	    stm32_gpiowrite(GPIO_SPI_CS_BARO, !selected);
 	    break;
     default:
         break;
