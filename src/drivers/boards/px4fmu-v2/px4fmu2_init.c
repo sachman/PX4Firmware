@@ -218,7 +218,9 @@ __EXPORT int nsh_archinitialize(void)
 	/* configure ADC pins */
 	stm32_configgpio(GPIO_ADC1_IN2);	/* BATT_VOLTAGE_SENS */
 	stm32_configgpio(GPIO_ADC1_IN3);	/* BATT_CURRENT_SENS */
-	stm32_configgpio(GPIO_ADC1_IN4);	/* VDD_5V_SENS */
+	/* AUS: Changed for porting purposes; used by MPU9250 CS */
+	//stm32_configgpio(GPIO_ADC1_IN4);	/* VDD_5V_SENS */
+
 	// stm32_configgpio(GPIO_ADC1_IN10);	/* used by VBUS valid */
 	// stm32_configgpio(GPIO_ADC1_IN11);	/* unused */
 	// stm32_configgpio(GPIO_ADC1_IN12);	/* used by MPU6000 CS */

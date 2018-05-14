@@ -69,29 +69,39 @@
 
 __EXPORT void stm32_spiinitialize(void)
 {
+/* AUS: Changed for porting purposes; v10 has only MPU9250 on SPI1  */
 #ifdef CONFIG_STM32_SPI1
+#if 0
 	stm32_configgpio(GPIO_SPI_CS_GYRO);
 	stm32_configgpio(GPIO_SPI_CS_ACCEL_MAG);
 	stm32_configgpio(GPIO_SPI_CS_BARO);
 	stm32_configgpio(GPIO_SPI_CS_HMC);
+#endif
 	stm32_configgpio(GPIO_SPI_CS_MPU);
 
 	/* De-activate all peripherals,
 	 * required for some peripheral
 	 * state machines
 	 */
+/* AUS: Changed for porting purposes; v10 has only MPU9250 on SPI1  */
+#if 0
 	stm32_gpiowrite(GPIO_SPI_CS_GYRO, 1);
 	stm32_gpiowrite(GPIO_SPI_CS_ACCEL_MAG, 1);
 	stm32_gpiowrite(GPIO_SPI_CS_BARO, 1);
 	stm32_gpiowrite(GPIO_SPI_CS_HMC, 1);
+#endif
 	stm32_gpiowrite(GPIO_SPI_CS_MPU, 1);
 
+/* AUS: Changed for porting purposes; v10 has only MPU9250 on SPI1  */
+#if 0
 	stm32_configgpio(GPIO_EXTI_GYRO_DRDY);
 	stm32_configgpio(GPIO_EXTI_MAG_DRDY);
 	stm32_configgpio(GPIO_EXTI_ACCEL_DRDY);
+#endif
 	stm32_configgpio(GPIO_EXTI_MPU_DRDY);
 #endif
 
+/* AUS: Changed for porting purposes; v10 has FRAM on SPI4 */
 #ifdef CONFIG_STM32_SPI4
 	stm32_configgpio(GPIO_SPI_CS_FRAM);
 	stm32_gpiowrite(GPIO_SPI_CS_FRAM, 1);
@@ -114,6 +124,10 @@ __EXPORT void stm32_spi1select(FAR struct spi_dev_s *dev, enum spi_dev_e devid, 
 	/* SPI select is active low, so write !selected to select the device */
 
 	switch (devid) {
+	/* AUS: Changed for porting purposes.
+	 * Only MPU is existing on SPI1 on V10.
+	 */
+#if 0
 	case PX4_SPIDEV_GYRO:
 		/* Making sure the other peripherals are not selected */
 		stm32_gpiowrite(GPIO_SPI_CS_GYRO, !selected);
@@ -150,12 +164,19 @@ __EXPORT void stm32_spi1select(FAR struct spi_dev_s *dev, enum spi_dev_e devid, 
 		stm32_gpiowrite(GPIO_SPI_CS_MPU, 1);
 		break;
 
+#endif
+
 	case PX4_SPIDEV_MPU:
 		/* Making sure the other peripherals are not selected */
+	    /* AUS: Changed for porting purposes.
+	     * Only MPU is existing on SPI1 on V10.
+	     */
+#if 0
 		stm32_gpiowrite(GPIO_SPI_CS_GYRO, 1);
 		stm32_gpiowrite(GPIO_SPI_CS_ACCEL_MAG, 1);
 		stm32_gpiowrite(GPIO_SPI_CS_BARO, 1);
 		stm32_gpiowrite(GPIO_SPI_CS_HMC, 1);
+#endif
 		stm32_gpiowrite(GPIO_SPI_CS_MPU, !selected);
 		break;
 
@@ -195,6 +216,7 @@ __EXPORT uint8_t stm32_spi4status(FAR struct spi_dev_s *dev, enum spi_dev_e devi
 }
 #endif
 
+/* AUS: Changed for porting purposes */
 __EXPORT void stm32_spi2select(FAR struct spi_dev_s *dev, enum spi_dev_e devid, bool selected)
 {
 	/* SPI select is active low, so write !selected to select the device */
